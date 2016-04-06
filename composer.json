@@ -1,0 +1,21 @@
+{
+    "name": "whte-rbt/file-inspections-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcel Kraus",
+            "email": "mail@marcelkraus.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "WhteRbt\\FileInspectionsBundle\\": "src" }
+    },
+    "autoload-dev": {
+        "psr-4": { "WhteRbt\\FileInspectionsBundle\\Tests\\": "tests" }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~3.0"
+    }
+}
