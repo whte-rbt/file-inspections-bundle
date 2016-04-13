@@ -69,6 +69,11 @@ class InspectorFactory
      */
     protected function getClassNameById($id)
     {
-        return sprintf('%sInspector', str_replace('_', '', ucwords($id, '_')));
+        $classNameParts = explode('_', $id);
+        foreach ($classNameParts as $key => $part) {
+            $classNameParts[$key] = ucwords($part);
+        }
+
+        return sprintf('%sInspector', implode('', $classNameParts));
     }
 }
