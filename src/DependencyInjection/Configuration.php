@@ -53,7 +53,7 @@ class Configuration implements ConfigurationInterface
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
-                            ->enumNode('mail')
+                            ->enumNode('info_level')
                                 ->isRequired()
                                 ->values(['all', 'success', 'error', 'none'])
                             ->end()

@@ -11,6 +11,7 @@
 
 namespace WhteRbt\FileInspectionsBundle\EventListener;
 
+use InvalidArgumentException;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_Mime_Message;
@@ -68,6 +69,10 @@ class MailerSubscriber implements EventSubscriberInterface
      */
     public function onSuccess(InspectionEvent $event)
     {
+        if (!$this->isMailEnabled('success', $event->getInfoLevel())) {
+            return;
+        }
+
         $subject = sprintf('[%s: %s] Success Message',
             $event->getJobId(),
             $event->getInspector()->getName()
@@ -92,6 +97,10 @@ class MailerSubscriber implements EventSubscriberInterface
      */
     public function onError(InspectionEvent $event)
     {
+        if (!$this->isMailEnabled('error', $event->getInfoLevel())) {
+            return;
+        }
+
         $subject = sprintf('[%s: %s] Failure Notice',
             $event->getJobId(),
             $event->getInspector()->getName()
@@ -124,5 +133,31 @@ class MailerSubscriber implements EventSubscriberInterface
             ->setFrom($this->mailerConfig['sender'])
             ->setTo($this->mailerConfig['recipient'])
             ->setBody($body, 'text/plain');
+    }
+
+    /**
+     * Returns true if mail receipt is enabled.
+     *
+     * The configuration allows the parameter "info_level" to be "all", "success",
+     * "error" or "none" for each job.
+     *
+     * @param string $status
+     * @param bool   $infoLevel
+     *
+     * @return bool
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function isMailEnabled($status, $infoLevel)
+    {
+        if (!in_array($status, ['success', 'error'])) {
+            throw new InvalidArgumentException(sprintf('The argument $status ("%s") does not contain a valid value ("status", "error").', $status));
+        }
+
+        if ($infoLevel == 'all' || $infoLevel == $status) {
+            return true;
+        }
+
+        return false;
     }
 }

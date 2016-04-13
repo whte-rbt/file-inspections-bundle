@@ -13,6 +13,7 @@ namespace WhteRbt\FileInspectionsBundle\Command;
 
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -52,10 +53,11 @@ class InspectAllCommand extends ContainerAwareCommand
                             $inspection['attributes']
                         );
                         $inspector->inspect();
-                        $eventDispatcher->dispatch(Events::INSPECTION_SUCCESS, new InspectionEvent($jobId, $inspector));
-                        $style->success(sprintf('Inspection "%s" of "%s/%s" successfully.', $inspectionId, $job['path'], $job['filename']));
-                    } catch (LogicException $e) {
-                        $eventDispatcher->dispatch(Events::INSPECTION_ERROR, new InspectionEvent($jobId, $inspector));
+                        $eventDispatcher->dispatch(Events::INSPECTION_SUCCESS, new InspectionEvent($jobId, $job['info_level'], $inspector));
+                        $style->success(sprintf('Inspection "%s" of "%s/%s" successfully.', $inspectionId, $job['info_level'], $job['path'], $job['filename']));
+                    }
+                    catch (LogicException $e) {
+                        $eventDispatcher->dispatch(Events::INSPECTION_ERROR, new InspectionEvent($jobId, $job['info_level'], $inspector));
                         $style->error(sprintf('Inspection "%s" of "%s/%s" failed.', $inspectionId, $job['path'], $job['filename']));
                     }
                 }
