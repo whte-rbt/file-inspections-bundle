@@ -89,15 +89,25 @@ class ContentInspector extends AbstractInspector
     /**
      * Returns parsed pattern.
      *
+     * The method replaces a "{{ Y-m-d }}" placeholder with a formatted date.
+     *
      * @param string $pattern
      * @param string $day
+     *
+     * @return string
      */
     protected function getParsedPattern($pattern, $day)
     {
         preg_match('#(\{\{){1}(.*)(\}\}){1}#', $pattern, $matches);
-        $regexPattern = $matches[0];
-        $date = date($matches[2], strtotime($day));
 
-        return str_replace($regexPattern, $date, $pattern);
+        // A valid date placeholder was found when the array contains four elements
+        if (count($matches) == 4) {
+            $regexPattern = $matches[0];
+            $date = trim(date($matches[2], strtotime($day)));
+
+            return str_replace($regexPattern, $date, $pattern);
+        }
+
+        return $pattern;
     }
 }

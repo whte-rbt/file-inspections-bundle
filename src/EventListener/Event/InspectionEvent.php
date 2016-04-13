@@ -25,7 +25,7 @@ class InspectionEvent extends Event
      * @var string
      */
     private $infoLevel;
-    
+
     /**
      * @var InspectorInterface
      */
@@ -64,7 +64,7 @@ class InspectionEvent extends Event
     {
         return $this->infoLevel;
     }
-    
+
     /**
      * Returns inspector.
      *
