@@ -11,7 +11,9 @@
 
 namespace WhteRbt\FileInspectionsBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class WhteRbtFileInspectionsExtension extends Extension
@@ -25,8 +27,12 @@ class WhteRbtFileInspectionsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         // Set config parameters
+        $container->setParameter('whte_rbt_file_inspections.mailer', $config['mailer']);
         $container->setParameter('whte_rbt_file_inspections.namespaces', $config['namespaces']);
-        $container->setParameter('whte_rbt_file_inspections.queue', $config['queue']);
+        $container->setParameter('whte_rbt_file_inspections.jobs', $config['jobs']);
+
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
     }
 
     /**

@@ -28,6 +28,14 @@ class ContentInspector extends AbstractInspector
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'ContentInspector';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function inspect()
     {
         $finder = new Finder();

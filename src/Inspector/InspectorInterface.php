@@ -25,11 +25,39 @@ interface InspectorInterface
     public function __construct($path, $filename, array $attributes);
 
     /**
-     * Inspects the file $filename in given $path.
+     * Returns name of inspector.
      *
-     * @throws LogicException;
+     * @return mixed
      */
-    public function inspect();
+    public function getName();
+
+    /**
+     * Retuns path.
+     *
+     * @return string
+     */
+    public function getPath();
+
+    /**
+     * Returns filename.
+     *
+     * @return string
+     */
+    public function getFilename();
+
+    /**
+     * Returns filname prefixed with path.
+     * 
+     * @return string
+     */
+    public function getFilenameWithPath();
+
+    /**
+     * Returns attributes.
+     *
+     * @return array
+     */
+    public function getAttributes();
 
     /**
      * Returns attribute defaults for the inspector.
@@ -37,4 +65,11 @@ interface InspectorInterface
      * @return array
      */
     public function getAttributeDefaults();
+
+    /**
+     * Inspects the file $filename in given $path.
+     *
+     * @throws LogicException;
+     */
+    public function inspect();
 }

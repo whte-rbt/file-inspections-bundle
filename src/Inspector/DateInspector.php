@@ -28,6 +28,14 @@ class DateInspector extends AbstractInspector
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'DateInspector';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function inspect()
     {
         $finder = new Finder();

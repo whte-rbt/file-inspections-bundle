@@ -39,15 +39,35 @@ abstract class AbstractInspector implements InspectorInterface
     }
 
     /**
-     * Returns merged attributes.
-     *
-     * @param array $attributes
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function mergeAttributes(array $attributes)
+    public function getPath()
     {
-        return array_merge($this->getAttributeDefaults(), $attributes);
+        return $this->path;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilenameWithPath()
+    {
+        return sprintf('%s/%s', $this->path, $this->filename);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 
     /**
@@ -59,4 +79,21 @@ abstract class AbstractInspector implements InspectorInterface
      * {@inheritdoc}
      */
     abstract public function getAttributeDefaults();
+
+    /**
+     * {@inheritdoc}
+     */
+    abstract public function getName();
+
+    /**
+     * Returns merged attributes.
+     *
+     * @param array $attributes
+     *
+     * @return array
+     */
+    protected function mergeAttributes(array $attributes)
+    {
+        return array_merge($this->getAttributeDefaults(), $attributes);
+    }
 }

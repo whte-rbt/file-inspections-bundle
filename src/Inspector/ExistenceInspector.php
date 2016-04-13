@@ -19,6 +19,14 @@ class ExistenceInspector extends AbstractInspector
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'ExistenceInspector';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function inspect()
     {
         $finder = new Finder();
