@@ -1,5 +1,6 @@
 {
     "name": "whte-rbt/file-inspections-bundle",
+    "description": "The WhteRbtFileInspectionsBundle allows to inspect files for consistency with ease",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
