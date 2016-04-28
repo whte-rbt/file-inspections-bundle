@@ -15,8 +15,9 @@ use InvalidArgumentException;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_Mime_Message;
+use Twig_Environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig_TemplateInterface;
 use WhteRbt\FileInspectionsBundle\EventListener\Event\InspectionEvent;
 use WhteRbt\FileInspectionsBundle\Events;
 
@@ -28,9 +29,9 @@ class MailerSubscriber implements EventSubscriberInterface
     protected $mailer;
 
     /**
-     * @var EngineInterface
+     * @var Twig_Environment
      */
-    private $engine;
+    private $twig;
 
     /**
      * @var array
@@ -40,14 +41,14 @@ class MailerSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param Swift_Mailer    $mailer
-     * @param EngineInterface $engine
-     * @param array           $mailerConfig
+     * @param Swift_Mailer     $mailer
+     * @param Twig_Environment $twig
+     * @param array            $mailerConfig
      */
-    public function __construct(Swift_Mailer $mailer, EngineInterface $engine, array $mailerConfig)
+    public function __construct(Swift_Mailer $mailer, Twig_Environment $twig, array $mailerConfig)
     {
         $this->mailer = $mailer;
-        $this->engine = $engine;
+        $this->twig = $twig;
         $this->mailerConfig = $mailerConfig;
     }
 
@@ -73,12 +74,16 @@ class MailerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $subject = sprintf('[%s: %s] Success Message',
-            $event->getJobId(),
-            $event->getInspector()->getName()
-        );
-        $body = $this->engine->render('WhteRbtFileInspectionsBundle::successMail.txt.twig', [
-            'job' => $event->getJobId(),
+        /** @var Twig_TemplateInterface $template */
+        $template = $this->twig->loadTemplate('WhteRbtFileInspectionsBundle::successMail.txt.twig');
+
+        $subject = $template->renderBlock('subject', [
+            'job' => $event->getJob(),
+            'inspector' => $event->getInspector()->getName(),
+        ]);
+
+        $body = $template->renderBlock('body', [
+            'job' => $event->getJob(),
             'inspector' => $event->getInspector()->getName(),
             'path' => $event->getInspector()->getPath(),
             'filename' => $event->getInspector()->getFilename(),
@@ -101,12 +106,16 @@ class MailerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $subject = sprintf('[%s: %s] Failure Notice',
-            $event->getJobId(),
-            $event->getInspector()->getName()
-        );
-        $body = $this->engine->render('WhteRbtFileInspectionsBundle::errorMail.txt.twig', [
-            'job' => $event->getJobId(),
+        /** @var Twig_TemplateInterface $template */
+        $template = $this->twig->loadTemplate('WhteRbtFileInspectionsBundle::errorMail.txt.twig');
+
+        $subject = $template->renderBlock('subject', [
+            'job' => $event->getJob(),
+            'inspector' => $event->getInspector()->getName(),
+        ]);
+
+        $body = $template->renderBlock('body', [
+            'job' => $event->getJob(),
             'inspector' => $event->getInspector()->getName(),
             'path' => $event->getInspector()->getPath(),
             'filename' => $event->getInspector()->getFilename(),

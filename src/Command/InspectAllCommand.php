@@ -41,22 +41,22 @@ class InspectAllCommand extends ContainerAwareCommand
         $inspectorFactory = new InspectorFactory($this->getNamespacesFromConfiguration());
         $eventDispatcher = $this->getContainer()->get('event_dispatcher');
 
-        foreach ($this->getJobsFromConfiguration() as $jobId => $job) {
-            foreach ($job['inspections'] as $inspectionId => $inspection) {
-                if (true === $inspection['active']) {
+        foreach ($this->getJobsFromConfiguration() as $job => $jobConfig) {
+            foreach ($jobConfig['inspections'] as $inspection => $inspectionConfig) {
+                if (true === $inspectionConfig['active']) {
                     try {
                         $inspector = $inspectorFactory->createInspector(
-                            $inspectionId,
-                            $job['path'],
-                            $job['filename'],
-                            $inspection['attributes']
+                            $inspection,
+                            $jobConfig['path'],
+                            $jobConfig['filename'],
+                            $inspectionConfig['attributes']
                         );
                         $inspector->inspect();
-                        $eventDispatcher->dispatch(Events::INSPECTION_SUCCESS, new InspectionEvent($jobId, $job['info_level'], $inspector));
-                        $style->success(sprintf('Inspection "%s" of "%s/%s" successfully.', $inspectionId, $job['info_level'], $job['path'], $job['filename']));
+                        $eventDispatcher->dispatch(Events::INSPECTION_SUCCESS, new InspectionEvent($job, $jobConfig['info_level'], $inspector));
+                        $style->success(sprintf('Inspection "%s" of "%s/%s" successfully.', $inspection, $jobConfig['info_level'], $jobConfig['path'], $jobConfig['filename']));
                     } catch (LogicException $e) {
-                        $eventDispatcher->dispatch(Events::INSPECTION_ERROR, new InspectionEvent($jobId, $job['info_level'], $inspector));
-                        $style->error(sprintf('Inspection "%s" of "%s/%s" failed.', $inspectionId, $job['path'], $job['filename']));
+                        $eventDispatcher->dispatch(Events::INSPECTION_ERROR, new InspectionEvent($job, $jobConfig['info_level'], $inspector));
+                        $style->error(sprintf('Inspection "%s" of "%s/%s" failed.', $inspection, $jobConfig['path'], $jobConfig['filename']));
                     }
                 }
             }

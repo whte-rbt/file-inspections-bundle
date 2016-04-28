@@ -19,7 +19,7 @@ class InspectionEvent extends Event
     /**
      * @var string
      */
-    protected $jobId;
+    protected $job;
 
     /**
      * @var string
@@ -34,25 +34,25 @@ class InspectionEvent extends Event
     /**
      * Constructor.
      *
-     * @param string             $jobId
+     * @param string             $job
      * @param string             $infoLevel
      * @param InspectorInterface $inspector
      */
-    public function __construct($jobId, $infoLevel, InspectorInterface $inspector)
+    public function __construct($job, $infoLevel, InspectorInterface $inspector)
     {
-        $this->jobId = $jobId;
+        $this->job = $job;
         $this->infoLevel = $infoLevel;
         $this->inspector = $inspector;
     }
 
     /**
-     * Returns jobId.
+     * Returns job.
      *
      * @return string
      */
-    public function getJobId()
+    public function getJob()
     {
-        return $this->jobId;
+        return $this->job;
     }
 
     /**
