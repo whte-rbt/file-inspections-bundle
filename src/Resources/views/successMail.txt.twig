@@ -1,15 +1,25 @@
-=== Great Success! ===
+{% extends 'WhteRbtFileInspectionsBundle::mailTemplate.txt.twig' %}
 
-Summary: The scheduled inspection "{{ inspector }}" of "{{ file }}", defined by job "{{ job }}", passed.
+{% trans_default_domain 'WhteRbtFileInspectionsBundle' %}
 
-* Job: {{ job }}
-* Inspector: {{ inspector }}
-* Path: {{ path }}
-* Filename: {{ filename }}
-* Date: {{ 'now' | date('y-m-d H:i:s') }}
+{% block subject %}
+{% autoescape false %}
+{{- 'mail.success.subject'|trans({ '%job%': job, '%inspector%': inspector }) -}}
+{% endautoescape %}
+{% endblock %}
 
-> Remind me to thank John for a lovely weekend.
-> -- Dr. Ian Malcolm
-
---
-This is an automatically generated email, please do not reply.
+{% block body %}
+{% autoescape false %}
+{{-
+    'mail.success.body'|trans({
+        '%date%': 'now'|date('y-m-d H:i:s'),
+        '%file%': file,
+        '%filename%': filename,
+        '%inspector%': inspector,
+        '%job%': job,
+        '%path%': path,
+    })
+-}}
+{{ parent() }}
+{% endautoescape %}
+{% endblock %}

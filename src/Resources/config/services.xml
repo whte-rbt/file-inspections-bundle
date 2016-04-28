@@ -4,7 +4,7 @@
     <services>
         <service id="whte_rbt_file_inspections.mailer_subscriber" class="WhteRbt\FileInspectionsBundle\EventListener\MailerSubscriber">
             <argument type="service" id="mailer"/>
-            <argument type="service" id="templating"/>
+            <argument type="service" id="twig"/>
             <argument type="string">%whte_rbt_file_inspections.mailer%</argument>
             <tag name="kernel.event_subscriber"/>
         </service>

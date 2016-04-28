@@ -1,0 +1,32 @@
+mail:
+    success:
+        subject: '[%job%: %inspector%] Erfolgsmeldung'
+        body: |
+            === Großer Erfolg! ===
+
+            Zusammenfassung: Die geplante Inspektion "%inspector%" von "%file%", definiert im Job "%job%", war erfolgreich.
+
+            * Job: %job%
+            * Inspektor: %inspector%
+            * Pfad: %path%
+            * Dateiname: %filename%
+            * Datum: %date%
+
+            > Erinnern Sie mich daran, dass ich John für das bezaubernde Wochenende danke.
+            > -- Dr. Ian Malcolm
+    error:
+        subject: '[%job%: %inspector%] Fehlermeldung'
+        body: |
+            === Schwerer Fehlschlag! ===
+
+            Zusammenfassung: Die geplante Inspektion "%inspector%" von "%file%", definiert im Job "%job%", ist fehlgeschlagen.
+
+            * Job: %job%
+            * Inspektor: %inspector%
+            * Pfad: %path%
+            * Dateiname: %filename%
+            * Datum: %date%
+
+            > Das nächste Mal ist alles fehlerfrei.
+            > -- John Hammond
+    footer: "\n\n-- \nDas ist eine automatisierte E-Mail. Bitte antworten Sie nicht darauf."

@@ -17,7 +17,7 @@ use Swift_Message;
 use Swift_Mime_Message;
 use Twig_Environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Twig_TemplateInterface;
+use Twig_Template;
 use WhteRbt\FileInspectionsBundle\EventListener\Event\InspectionEvent;
 use WhteRbt\FileInspectionsBundle\Events;
 
@@ -74,24 +74,14 @@ class MailerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Twig_TemplateInterface $template */
-        $template = $this->twig->loadTemplate('WhteRbtFileInspectionsBundle::successMail.txt.twig');
-
-        $subject = $template->renderBlock('subject', [
-            'job' => $event->getJob(),
-            'inspector' => $event->getInspector()->getName(),
-        ]);
-
-        $body = $template->renderBlock('body', [
-            'job' => $event->getJob(),
-            'inspector' => $event->getInspector()->getName(),
-            'path' => $event->getInspector()->getPath(),
-            'filename' => $event->getInspector()->getFilename(),
-            'file' => $event->getInspector()->getFilenameWithPath(),
-        ]);
-
-        $this->mailer->send(
-            $this->createMessage($subject, $body)
+        $this->sendMail(
+            'WhteRbtFileInspectionsBundle::successMail.txt.twig', [
+                'job' => $event->getJob(),
+                'inspector' => $event->getInspector()->getName(),
+                'path' => $event->getInspector()->getPath(),
+                'filename' => $event->getInspector()->getFilename(),
+                'file' => $event->getInspector()->getFilenameWithPath(),
+            ]
         );
     }
 
@@ -106,42 +96,15 @@ class MailerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Twig_TemplateInterface $template */
-        $template = $this->twig->loadTemplate('WhteRbtFileInspectionsBundle::errorMail.txt.twig');
-
-        $subject = $template->renderBlock('subject', [
-            'job' => $event->getJob(),
-            'inspector' => $event->getInspector()->getName(),
-        ]);
-
-        $body = $template->renderBlock('body', [
-            'job' => $event->getJob(),
-            'inspector' => $event->getInspector()->getName(),
-            'path' => $event->getInspector()->getPath(),
-            'filename' => $event->getInspector()->getFilename(),
-            'file' => $event->getInspector()->getFilenameWithPath(),
-        ]);
-
-        $this->mailer->send(
-            $this->createMessage($subject, $body)
+        $this->sendMail(
+            'WhteRbtFileInspectionsBundle::errorMail.txt.twig', [
+                'job' => $event->getJob(),
+                'inspector' => $event->getInspector()->getName(),
+                'path' => $event->getInspector()->getPath(),
+                'filename' => $event->getInspector()->getFilename(),
+                'file' => $event->getInspector()->getFilenameWithPath(),
+            ]
         );
-    }
-
-    /**
-     * Returns new Swift_Message.
-     *
-     * @param string $subject
-     * @param string $body
-     *
-     * @return Swift_Mime_Message
-     */
-    protected function createMessage($subject, $body)
-    {
-        return Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setFrom($this->mailerConfig['sender'])
-            ->setTo($this->mailerConfig['recipient'])
-            ->setBody($body, 'text/plain');
     }
 
     /**
@@ -168,5 +131,29 @@ class MailerSubscriber implements EventSubscriberInterface
         }
 
         return false;
+    }
+
+    /**
+     * Sends mail.
+     * 
+     * @param string $template
+     * @param array  $context
+     */
+    protected function sendMail($template, array $context)
+    {
+        $template = $this->twig->loadTemplate($template);
+        $context = $this->twig->mergeGlobals($context);
+
+        $subject = $template->renderBlock('subject', $context);
+        $body = $template->renderBlock('body', $context);
+        
+        /** @var Swift_Mime_Message $message */
+        $message = Swift_Message::newInstance()
+            ->setSubject($subject)
+            ->setFrom($this->mailerConfig['sender'])
+            ->setTo($this->mailerConfig['recipient'])
+            ->setBody($body, 'text/plain');
+        
+        $this->mailer->send($message);
     }
 }

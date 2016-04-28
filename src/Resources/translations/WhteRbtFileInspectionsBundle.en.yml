@@ -1,0 +1,32 @@
+mail:
+    success:
+        subject: '[%job%: %inspector%] Success Message'
+        body: |
+            === Great Success! ===
+
+            Summary: The scheduled inspection "%inspector%" of "%file%", defined by job "%job%", passed.
+
+            * Job: %job%
+            * Inspector: %inspector%
+            * Path: %path%
+            * Filename: %filename%
+            * Date: %date%
+
+            > Remind me to thank John for a lovely weekend.
+            > -- Dr. Ian Malcolm
+    error:
+        subject: '[%job%: %inspector%] Failure Message'
+        body: |
+            === Master Caution! ===
+
+            Summary: The scheduled inspection "%inspector%" of "%file%", defined by job "%job%" failed.
+
+            * Job: %job%
+            * Inspector: %inspector%
+            * Path: %path%
+            * Filename: %filename%
+            * Date: %date%
+
+            > Next time it will be flawless.
+            > -- John Hammond
+    footer: "\n\n-- \nThis is an automatically generated email, please do not reply."
