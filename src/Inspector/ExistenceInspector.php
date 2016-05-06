@@ -37,7 +37,7 @@ class ExistenceInspector extends AbstractInspector
             ->count();
 
         if (1 != $foundFiles) {
-            throw new LogicException(sprintf('The requested file "%s" in path "%s" does not exist.', $this->filename, $this->path));
+            return InspectionError::create($this->getName(), sprintf('The requested file "%s" in path "%s" does not exist.', $this->filename, $this->path));
         }
 
         return;

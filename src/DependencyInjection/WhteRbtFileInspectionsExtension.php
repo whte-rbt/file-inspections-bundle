@@ -27,6 +27,7 @@ class WhteRbtFileInspectionsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         // Set config parameters
+        $container->setParameter('whte_rbt_file_inspections', $config);
         $container->setParameter('whte_rbt_file_inspections.mailer', $config['mailer']);
         $container->setParameter('whte_rbt_file_inspections.namespaces', $config['namespaces']);
         $container->setParameter('whte_rbt_file_inspections.jobs', $config['jobs']);

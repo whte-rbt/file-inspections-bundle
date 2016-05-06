@@ -11,14 +11,11 @@
 
 namespace WhteRbt\FileInspectionsBundle\Command;
 
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use WhteRbt\FileInspectionsBundle\EventListener\Event\InspectionEvent;
-use WhteRbt\FileInspectionsBundle\Events;
-use WhteRbt\FileInspectionsBundle\Inspector\InspectorFactory;
+use WhteRbt\FileInspectionsBundle\Context\DefaultContext;
 
 class InspectAllCommand extends ContainerAwareCommand
 {
@@ -37,49 +34,19 @@ class InspectAllCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var DefaultContext $context */
+        $context = $this->getContainer()->get('whte_rbt_file_inspections.default_context');
+
+        $context->execute();
+
         $style = new SymfonyStyle($input, $output);
-        $inspectorFactory = new InspectorFactory($this->getNamespacesFromConfiguration());
-        $eventDispatcher = $this->getContainer()->get('event_dispatcher');
-
-        foreach ($this->getJobsFromConfiguration() as $job => $jobConfig) {
-            foreach ($jobConfig['inspections'] as $inspection => $inspectionConfig) {
-                if (true === $inspectionConfig['active']) {
-                    try {
-                        $inspector = $inspectorFactory->createInspector(
-                            $inspection,
-                            $jobConfig['path'],
-                            $jobConfig['filename'],
-                            $inspectionConfig['attributes']
-                        );
-                        $inspector->inspect();
-                        $eventDispatcher->dispatch(Events::INSPECTION_SUCCESS, new InspectionEvent($job, $jobConfig['info_level'], $inspector));
-                        $style->success(sprintf('Inspection "%s" of "%s/%s" successfully.', $inspection, $jobConfig['info_level'], $jobConfig['path'], $jobConfig['filename']));
-                    } catch (LogicException $e) {
-                        $eventDispatcher->dispatch(Events::INSPECTION_ERROR, new InspectionEvent($job, $jobConfig['info_level'], $inspector));
-                        $style->error(sprintf('Inspection "%s" of "%s/%s" failed.', $inspection, $jobConfig['path'], $jobConfig['filename']));
-                    }
-                }
-            }
+        if (!$context->hasErrors()) {
+            $style->success('All inspections within all jobs successfully executed.');
+        } else {
+            $style->error(sprintf('%d inspection error(s) within %d job(s) occurred during execution of the jobs. Please see Emails (if configured) for further information.',
+                $context->countErroneousInspectors(),
+                $context->countErroneousJobs()
+            ));
         }
-    }
-
-    /**
-     * Returns namespaces from configuration.
-     *
-     * @return array
-     */
-    protected function getNamespacesFromConfiguration()
-    {
-        return $this->getContainer()->getParameter('whte_rbt_file_inspections.namespaces');
-    }
-
-    /**
-     * Returns all jobs from configuration.
-     *
-     * @return array
-     */
-    protected function getJobsFromConfiguration()
-    {
-        return $this->getContainer()->getParameter('whte_rbt_file_inspections.jobs');
     }
 }

@@ -2,6 +2,10 @@
 
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <service id="whte_rbt_file_inspections.default_context" class="WhteRbt\FileInspectionsBundle\Context\DefaultContext">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="string">%whte_rbt_file_inspections%</argument>
+        </service>
         <service id="whte_rbt_file_inspections.mailer_subscriber" class="WhteRbt\FileInspectionsBundle\EventListener\MailerSubscriber">
             <argument type="service" id="mailer"/>
             <argument type="service" id="twig"/>

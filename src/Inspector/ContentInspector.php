@@ -24,7 +24,7 @@ class ContentInspector extends AbstractInspector
         'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
         'last monday', 'last tuesday', 'last wednesday', 'last thursday', 'last friday', 'last saturday', 'last sunday',
     ];
-
+    
     /**
      * {@inheritdoc}
      */
@@ -50,7 +50,7 @@ class ContentInspector extends AbstractInspector
             ->count();
 
         if (1 != $foundFiles) {
-            throw new LogicException(sprintf('The requested file "%s" in path "%s" does not contains the given pattern ("%s").',
+            return InspectionError::create($this->getName(), sprintf('The requested file "%s" in path "%s" does not contains the given pattern ("%s").',
                 $this->filename,
                 $this->path,
                 $pattern

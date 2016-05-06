@@ -52,7 +52,7 @@ class DateInspector extends AbstractInspector
             ->count();
 
         if (1 != $foundFiles) {
-            throw new LogicException(sprintf('The requested file "%s" in path "%s" does not have a valid date ("%s between %s and %s").',
+            return InspectionError::create($this->getName(), sprintf('The requested file "%s" in path "%s" does not have a valid date ("%s between %s and %s").',
                 $this->filename,
                 $this->path,
                 $day,
